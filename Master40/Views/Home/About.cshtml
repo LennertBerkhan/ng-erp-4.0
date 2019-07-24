@@ -6,3 +6,82 @@
 
 <p>Use this area to provide additional information.</p>
 <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+<div id="chartTarget" style="height: 160px; width: 100%;">
+    <canvas id="chartCanvas" width="600" height="60" style="display: block; height: 60px; width: 600px;"></canvas>
+    <div style="opacity:0;" class="chartTooltip center">
+    </div>
+</div>
+<script>
+    var data = {
+  "type": "timeline",
+  "options": {
+      "elements": {
+          "colorFunction": function(text, data, dataset, index) {
+              if(text.includes("Setup") == true)
+              	return Color('rgba(255, 99, 132)');
+               else 
+               	return Color('rgba(55, 99, 255)');
+          },
+          "showText": true,
+          "textPadding": 15
+      },
+      scales: {
+        xAxes: [
+        {
+          id: 'time',
+          display: false
+        },{
+        	type: "linear",
+          id: 'linear',
+          ticks: {
+            min: 0,
+            max: 20160,
+            stepSize: 420
+          }
+        }]
+      }
+  },
+  "data": {
+      "labels": [
+          "Saw",
+          "Drill"
+      ],
+      "datasets": [
+          {	"data": [
+                  [
+                      "2018-01-22T16:55:00.000Z",
+                      "2018-01-22T17:00:00.000Z",
+                      "Setup: 5 Min for Hard Long Work"
+                  ],
+                  [
+                      "2018-01-22T17:00:00.000Z",
+                      "2018-01-23T05:03:42.626Z",
+                      "Hard Long Work"
+                  ]
+              ]
+          },
+          {
+              "data": [
+                  [
+                      "2018-01-22T17:30:00.000Z",
+                      "2018-01-22T20:00:00.000Z",
+                      "Work"
+                  ],
+                  [
+                      "2018-01-22T20:55:00.000Z",
+                      "2018-01-23T01:57:54.437Z",
+                      "Setup 5 min"
+                  ],
+                  [
+                      "2018-01-23T01:57:55.437Z",
+                      "2018-01-23T05:40:44.626Z",
+                      "Work"
+                  ]
+              ]
+          }
+      ]
+  },
+};
+var chart = new Chart($('#chartCanvas')[0], data);
+
+</script>

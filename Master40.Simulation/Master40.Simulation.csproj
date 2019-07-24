@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <Configurations>Debug;Release;Azure</Configurations>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject>Master40.Simulation.Program</StartupObject>
