@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Master40.DB.DataModel;
 using Master40.Simulation;
 using Master40.SimulationCore.Environment.Options;
 using Master40.DB.Enums;
@@ -22,7 +23,7 @@ namespace Master40.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            ViewData[index: "machines"] = _context.Resources.Select(selector: x => x.Name).ToList();
+            ViewData[index: "machines"] = ((IQueryable<M_Resource>)_context.Resources).Select(selector: x => x.Name).ToList();
             var masterDBContext = _context.Resources.Include(navigationPropertyPath: a => a.ResourceSkills);
             return View(model: await masterDBContext.ToListAsync());
         }

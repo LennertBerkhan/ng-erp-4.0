@@ -54,8 +54,9 @@ namespace Master40.ViewComponents
 
         private async Task<ICollection<MenuItem>> GetItemsAsync(int id)
         {
-            return await _menu.MenuItems
-                .Where(predicate: m => m.MenuId == id).OrderBy(keySelector: x => x.MenuOrder).ToAsyncEnumerable()
+            // TODO not async anymore due to package incompatibility
+            return _menu.MenuItems
+                .Where(predicate: m => m.MenuId == id).OrderBy(keySelector: x => x.MenuOrder) //.ToAsyncEnumerable()
                 .Where(predicate: m => m.ParentMenuItemId == null).OrderBy(keySelector: x => x.MenuOrder).ToList();
 
         }

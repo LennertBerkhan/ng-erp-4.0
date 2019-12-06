@@ -1,0 +1,3 @@
+[submodule "HTW-PP-Core"]
+	path = HTW-PP-Core
+	url = git@github.com:xdah031/HTW-PP-Core.git

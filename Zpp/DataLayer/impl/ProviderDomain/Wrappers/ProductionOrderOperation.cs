@@ -16,7 +16,7 @@ namespace Zpp.DataLayer.impl.ProviderDomain.Wrappers
 {
     public class ProductionOrderOperation : IScheduleNode
     {
-        private readonly T_ProductionOrderOperation _productionOrderOperation;
+        public readonly T_ProductionOrderOperation _productionOrderOperation;
         private Priority _priority = null;
 
         public ProductionOrderOperation(T_ProductionOrderOperation productionOrderOperation)

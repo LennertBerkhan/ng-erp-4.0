@@ -96,7 +96,7 @@ namespace Master40.Controllers
                 return NotFound();
             }
 
-            var articleBom = await _context.ArticleBoms.SingleOrDefaultAsync(predicate: m => m.Id == id);
+            var articleBom = await ((IQueryable<M_ArticleBom>)_context.ArticleBoms).SingleOrDefaultAsync(predicate: m => m.Id == id);
             if (articleBom == null)
             {
                 return NotFound();
@@ -168,7 +168,7 @@ namespace Master40.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var articleBom = await _context.ArticleBoms.SingleOrDefaultAsync(predicate: m => m.Id == id);
+            var articleBom = await ((IQueryable<M_ArticleBom>)_context.ArticleBoms).SingleOrDefaultAsync(predicate: m => m.Id == id);
             _context.ArticleBoms.Remove(entity: articleBom);
             await _context.SaveChangesAsync();
             return RedirectToAction(actionName: "Index");

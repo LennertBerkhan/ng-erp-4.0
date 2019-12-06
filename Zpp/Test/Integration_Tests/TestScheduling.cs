@@ -32,7 +32,6 @@ namespace Zpp.Test.Integration_Tests
             zppSimulator.StartTestCycle();
         }
 
-
         [Theory]
         [InlineData(TestConfigurationFileNames.DESK_COP_5_LOTSIZE_2)]
         [InlineData(TestConfigurationFileNames.TRUCK_COP_5_LOTSIZE_2)]
