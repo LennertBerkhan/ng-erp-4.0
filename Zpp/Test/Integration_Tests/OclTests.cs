@@ -21,6 +21,11 @@ namespace Zpp.Test.Integration_Tests
         [Fact]
         public void OCL_ProductionOrderOperationScheduling()
         {
+            var zppSimulator = new ZppSimulator.impl.ZppSimulator();
+            zppSimulator.StartTestCycle();
+            var dbTransactionData =
+                ZppConfiguration.CacheManager.ReloadTransactionData();
+
             var ocls = @"
         context ProductionOrderOperation::GetValue()
             post ProductionOrderOperationScheduling:
@@ -30,14 +35,11 @@ namespace Zpp.Test.Integration_Tests
         ";
             OclTestProvider.AddConstraints(new[] {"Zpp", "Master40.DB"}, ocls);
 
-            var zppSimulator = new ZppSimulator.impl.ZppSimulator();
-            zppSimulator.StartTestCycle();
-            var dbTransactionData =
-                ZppConfiguration.CacheManager.ReloadTransactionData();
 
             foreach (var productionOrderOperation in dbTransactionData
                 .ProductionOrderOperationGetAll())
             {
+                Console.WriteLine(productionOrderOperation);
                 var v = productionOrderOperation.GetValue();
                 Assert.True(!(v is null));
             }
