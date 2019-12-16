@@ -134,7 +134,6 @@ namespace Master40.SimulationCore.Agents
 
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -142,6 +141,14 @@ namespace Master40.SimulationCore.Agents
         {
             DebugMessage(msg: Self + " finish has been called by " + Sender);
             base.Finish();
+        }
+
+        internal void Publish(object o)
+        {
+            // objekt müsste hier kppiert / erweitert werden.
+            FUpdateStockValues
+                fUpdateStockValuesDebug
+            this.Context.System.EventStream.Publish(@event: o);
         }
     }
 }

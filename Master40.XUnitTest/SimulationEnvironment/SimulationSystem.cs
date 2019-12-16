@@ -63,7 +63,7 @@ namespace Master40.XUnitTest.SimulationEnvironment
 
         [Theory]
         //[InlineData(SimulationType.None)]
-        [InlineData(SimulationType.DefaultSetupStack, 1, 60)]
+        [InlineData(SimulationType.DefaultSetupStack, 2, 60)]
         // [InlineData(SimulationType.DefaultSetupStack, 2, 60)]
         // [InlineData(SimulationType.BucketScope, 3, 60)]
         // [InlineData(SimulationType.BucketScope, 4, 120)]

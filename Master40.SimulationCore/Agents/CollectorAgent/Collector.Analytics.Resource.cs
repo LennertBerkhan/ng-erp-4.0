@@ -36,9 +36,7 @@ namespace Master40.SimulationCore.Agents.CollectorAgent
         private List<SimulationResourceJob> simulationJobsForDb { get; } = new List<SimulationResourceJob>();
         private List<SimulationResourceSetup> simulationResourceSetups { get; } = new List<SimulationResourceSetup>();
         private List<SimulationResourceSetup> simulationResourceSetupsForDb { get; } = new List<SimulationResourceSetup>();
-        
         private KpiManager kpiManager { get; } = new KpiManager();
-
         private long lastIntervalStart { get; set; } = 0;
         private List<FUpdateSimulationJob> _updatedSimulationJob { get; } = new List<FUpdateSimulationJob>();
         private List<FThroughPutTime> _ThroughPutTimes { get; } = new List<FThroughPutTime>();
@@ -50,6 +48,10 @@ namespace Master40.SimulationCore.Agents.CollectorAgent
         private CultureInfo _cultureInfo { get; } = CultureInfo.GetCultureInfo(name: "en-GB");
         private List<Kpi> Kpis { get; } = new List<Kpi>();
 
+        /// <summary>
+        /// Types to react on.
+        /// </summary>
+        /// <returns></returns>
         internal static List<Type> GetStreamTypes()
         {
             return new List<Type> { typeof(FCreateSimulationJob),
@@ -71,6 +73,12 @@ namespace Master40.SimulationCore.Agents.CollectorAgent
 
         public override bool Action(object message) => throw new Exception(message: "Please use EventHandle method to process Messages");
 
+        /// <summary>
+        /// Matching of Types to Methods for Collector Agents.
+        /// </summary>
+        /// <param name="simulationMonitor"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public bool EventHandle(SimulationMonitor simulationMonitor, object message)
         {
             switch (message)

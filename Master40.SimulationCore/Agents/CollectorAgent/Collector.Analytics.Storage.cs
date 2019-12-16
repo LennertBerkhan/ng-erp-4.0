@@ -49,7 +49,7 @@ namespace Master40.SimulationCore.Agents.CollectorAgent
             }
             return true;
         }
-
+        
         private void UpdateFeed(bool writeToDatabase)
         {
 

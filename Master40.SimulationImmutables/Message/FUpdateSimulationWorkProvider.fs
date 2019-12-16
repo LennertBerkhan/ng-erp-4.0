@@ -9,4 +9,5 @@ open System
         RequestAgentName : string
         IsHeadDemand : bool
         CustomerOrderId : int   
+        Sender : obj
     }
