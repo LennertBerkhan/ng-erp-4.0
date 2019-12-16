@@ -6,6 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Simulation\**" />
+      <EmbeddedResource Remove="Simulation\**" />
+      <None Remove="Simulation\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Json.Net" Version="1.0.18" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0-preview-20191115-01" />
       <PackageReference Include="OptimizedPriorityQueue" Version="4.2.0" />
@@ -29,11 +35,6 @@
       <Folder Include="LotSize\" />
       <Folder Include="OrderGraph\" />
       <Folder Include="Properties\" />
-      <Folder Include="Simulation\Agents\JobDistributor\Skills\" />
-      <Folder Include="Simulation\Agents\JobDistributor\Types\" />
-      <Folder Include="Simulation\Agents\Resource\Skills\" />
-      <Folder Include="Simulation\Monitors\" />
-      <Folder Include="Simulation\Types\" />
       <Folder Include="Utils\Queue\" />
       <Folder Include="WrappersForCollections\" />
       <Folder Include="WrappersForPrimitives\" />

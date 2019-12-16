@@ -189,10 +189,10 @@ namespace Master40.SimulationCore.Agents.CollectorAgent
             {
                 using (var ctx = ResultContext.GetContext(resultCon: Collector.Config.GetOption<DBConnectionString>().Value))
                 {
-                    // ctx.SimulationJobs.AddRange(entities: simulationJobsForDb);
-                    // ctx.SaveChanges();
-                    // ctx.SimulationResourceSetups.AddRange(entities: simulationResourceSetupsForDb);
-                    // ctx.SaveChanges();
+                    ctx.SimulationJobs.AddRange(entities: simulationJobsForDb);
+                    ctx.SaveChanges();
+                    ctx.SimulationResourceSetups.AddRange(entities: simulationResourceSetupsForDb);
+                    ctx.SaveChanges();
                     ctx.Kpis.AddRange(entities: Kpis);
                     ctx.SaveChanges();
                     ctx.Dispose();

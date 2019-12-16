@@ -172,10 +172,6 @@ namespace Master40.SimulationCore.Agents.StorageAgent.Behaviour
                                                                              , logThis: false));
 
                 // Update Work Item with Provider For
-                // TODO
-
-
-
                 var pub = new FUpdateSimulationWorkProvider(fArticleProviderKeys: article.ProviderList
                                                         , requestAgentId: article.DispoRequester.Path.Uid.ToString()
                                                         , requestAgentName: article.DispoRequester.Path.Name
