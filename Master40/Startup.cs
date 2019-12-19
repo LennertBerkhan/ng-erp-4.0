@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Threading.Tasks;
+﻿using Hangfire;
+using Master40.DB.Data.Context;
+using Master40.DB.Data.Initializer;
+using Master40.Simulation;
+using Master40.Tools.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -9,13 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Master40.DB.Data.Context;
-using Hangfire;
-using Master40.BusinessLogicCentral.MRP;
-using Master40.DB.Data.Initializer;
-using Master40.MessageSystem.SignalR;
-using Master40.Simulation.Simulation;
-using Swashbuckle.AspNetCore.Swagger;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Master40
 {
@@ -24,9 +21,9 @@ namespace Master40
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .SetBasePath(basePath: env.ContentRootPath)
+                .AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(path: $"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -39,50 +36,51 @@ namespace Master40
             // Add Database Context
             //services.AddDbContext<InMemmoryContext>(options =>
             //    options.UseInMemoryDatabase("InMemmoryContext"));
+            
+            services.AddDbContext<MasterDBContext>
+                (optionsAction: options => options.UseSqlServer(connectionString: Configuration.GetConnectionString(name: "DefaultConnection")));
+          
+            services.AddDbContext<OrderDomainContext>(optionsAction: options =>
+                options.UseSqlServer(connectionString: Configuration.GetConnectionString(name: "DefaultConnection")));
 
-            services.AddDbContext<MasterDBContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ResultContext>(optionsAction: options =>
+                options.UseSqlServer(connectionString: Configuration.GetConnectionString(name: "ResultConnection")));
 
-            services.AddDbContext<OrderDomainContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ProductionDomainContext>(optionsAction: options =>
+                options.UseSqlServer(connectionString: Configuration.GetConnectionString(name: "DefaultConnection")));
+            services.AddLogging(builder => { builder.AddFilter("Microsoft", LogLevel.Error); });
 
-            services.AddDbContext<ProductionDomainContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Hangfire
-            services.AddDbContext<HangfireDBContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("Hangfire")));
+            services.AddDbContext<HangfireDBContext>(optionsAction: options =>
+                options.UseSqlServer(connectionString: Configuration.GetConnectionString(name: "Hangfire")));
 
-            services.AddHangfire(options => 
-                options.UseSqlServerStorage(Configuration.GetConnectionString("Hangfire")));
+            services.AddHangfire(configuration: options => 
+                options.UseSqlServerStorage(nameOrConnectionString: Configuration.GetConnectionString(name: "Hangfire")));
 
             services.AddSingleton<IMessageHub, MessageHub>();
-            services.AddSingleton<IScheduling, Scheduling>();
-            services.AddSingleton<ICapacityScheduling, CapacityScheduling>();
-            services.AddSingleton<IProcessMrp, ProcessMrp>();
-            services.AddSingleton<ISimulator, Simulator>();
+            
             //services.AddSingleton<IProcessMrp, ProcessMrpSim>();
-            services.AddSingleton<IRebuildNets, RebuildNets>();
-            services.AddSingleton<AgentSimulator>();
+            services.AddSingleton<AgentCore>();
             // services.AddSingleton<Client>();
 
             // Register the Swagger generator, defining one or more Swagger documents
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "SSPS 4.0 API", Version = "v1" });
-            });
+            // services.AddSwaggerGen(setupAction: c =>
+            // {
+            //     c.SwaggerDoc(name: "v1", info: new Info { Title = "SSPS 4.0 API", Version = "v1" });
+            // });
 
 
             services.Configure<RequestLocalizationOptions>(
-                opts =>
+                configureOptions: opts =>
                 {
                     var supportedCultures = new List<CultureInfo>
                     {
-                        new CultureInfo("en-GB"),
-                        new CultureInfo("de-DE"),
+                        new CultureInfo(name: "en-GB"),
+                        new CultureInfo(name: "de-DE"),
                     };
 
-                    opts.DefaultRequestCulture = new RequestCulture("de-DE");
+                    opts.DefaultRequestCulture = new RequestCulture(culture: "de-DE");
                     // Formatting numbers, dates, etc.
                     opts.SupportedCultures = supportedCultures;
                     // UI strings that we have localized.
@@ -90,7 +88,7 @@ namespace Master40
                 });
                 
             // Add Framework Service
-            services.AddMvc();
+            services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddSignalR();
         }
 
@@ -101,56 +99,62 @@ namespace Master40
                             , ILoggerFactory loggerFactory
                             , HangfireDBContext hangfireContext
                             , MasterDBContext context
+                            , ResultContext contextResults
                             , ProductionDomainContext productionDomainContext)
         {
-            Task.Run((() => { 
-                //MasterDBInitializerLarge.DbInitialize(context);
-                MasterDBInitializerLarge.DbInitialize(context);
-                }
-            ));
-            HangfireDBInitializer.DbInitialize(hangfireContext);
-            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
-            app.UseRequestLocalization(options.Value);
-            GlobalConfiguration.Configuration.UseFilter(new AutomaticRetryAttribute { Attempts = 0 });
 
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            //MasterDBInitializerLarge.DbInitialize(context);
+            //MasterDBInitializerLarge.DbInitialize(context);
+            MasterDbInitializerTable.DbInitialize(context: context);
+
+            ResultDBInitializerBasic.DbInitialize(context: contextResults);
+
+            HangfireDBInitializer.DbInitialize(context: hangfireContext);
+            var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();
+            app.UseRequestLocalization(options: options.Value);
+            GlobalConfiguration.Configuration.UseFilter(filter: new AutomaticRetryAttribute { Attempts = 0 });
+
+            #region Hangfire 
+            GlobalConfiguration.Configuration.UseSqlServerStorage(nameOrConnectionString: Configuration.GetConnectionString(name: "Hangfire"));
+
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+            #endregion
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(errorHandlingPath: "/Home/Error");
             }
 
             app.UseFileServer();
             app.UseStaticFiles();
             // app.UseSignalR();
-            app.UseSignalR(router =>
+            app.UseSignalR(configure: router =>
             {
-                router.MapHub<MessageHub>("/MessageHub");
+                router.MapHub<MessageHub>(path: "/MessageHub");
             }) ;
 
             var serverOptions = new BackgroundJobServerOptions()
             {
                 ServerName = "ProcessingUnit",
             };
-            app.UseHangfireServer(serverOptions);
+            app.UseHangfireServer(options: serverOptions);
             app.UseHangfireDashboard();
 
-            app.UseSwagger();
+            // app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API DOC V1");
-            });
+            // app.UseSwaggerUI(setupAction: c =>
+            // {
+            //     c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "API DOC V1");
+            // });
 
 
-            app.UseMvc(routes =>
+            app.UseMvc(configureRoutes: routes =>
             {
                 routes.MapRoute(
                     name: "default",

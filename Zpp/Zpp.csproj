@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Simulation\**" />
+      <EmbeddedResource Remove="Simulation\**" />
+      <None Remove="Simulation\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Json.Net" Version="1.0.18" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0-preview-20191115-01" />
+      <PackageReference Include="OptimizedPriorityQueue" Version="4.2.0" />
+    </ItemGroup>
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>    
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Common\DemandDomain\WrappersForCollections\" />
+      <Folder Include="Common\DemandDomain\Wrappers\" />
+      <Folder Include="Common\ProviderDomain\WrappersForCollections\" />
+      <Folder Include="Common\ProviderDomain\Wrappers\" />
+      <Folder Include="Configuration\" />
+      <Folder Include="DbCache\" />
+      <Folder Include="GraphicalRepresentation\" />
+      <Folder Include="LotSize\" />
+      <Folder Include="OrderGraph\" />
+      <Folder Include="Properties\" />
+      <Folder Include="Utils\Queue\" />
+      <Folder Include="WrappersForCollections\" />
+      <Folder Include="WrappersForPrimitives\" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Master40.DB\Master40.DB.csproj" />
+    </ItemGroup>
+
+</Project>
