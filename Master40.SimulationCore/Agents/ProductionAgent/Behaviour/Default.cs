@@ -88,7 +88,7 @@ namespace Master40.SimulationCore.Agents.ProductionAgent.Behaviour
                                             , articleName: _articleToProduce.Article.Name
                                             , start: _articleToProduce.CreationTime
                                             , end: Agent.CurrentTime);
-                Agent.Context.System.EventStream.Publish(@event: pub);
+                Agent.Publish(pub, this);
             }
             Agent.TryToFinish();
 
@@ -241,7 +241,7 @@ namespace Master40.SimulationCore.Agents.ProductionAgent.Behaviour
                     , articleType: fArticle.Article.ArticleType.Name
                     , start: fJob.Start
                     , end: fJob.End);
-                Agent.Context.System.EventStream.Publish(@event: pub);
+                Agent.Publish(pub, this);
             }
 
             _articleToProduce = fArticle;

@@ -236,7 +236,7 @@ namespace Master40.SimulationCore.Agents.ResourceAgent.Behaviour
                     $"Start with Setup for Job {_jobInProgress.Current.Name}  Key: {_jobInProgress.Current.Key} Duration is {setupDuration} and start with Job at {Agent.CurrentTime + setupDuration}");
                 _toolManager.Mount(requiredResourceTool: _jobInProgress.Current.Tool);
                 var pubSetup = new FCreateSimulationResourceSetup(expectedDuration: setupDuration, duration: setupDuration, start: Agent.CurrentTime, resource: Agent.Name, resourceTool: _toolManager._equippedResourceTool.ResourceTool.Name);
-                Agent.Context.System.EventStream.Publish(@event: pubSetup);
+                Agent.Publish(pubSetup, this);
             }
 
             Agent.Send(instruction: Resource.Instruction.Default.DoWork.Create(message: null, target: Agent.Context.Self),
@@ -252,7 +252,7 @@ namespace Master40.SimulationCore.Agents.ResourceAgent.Behaviour
             Agent.DebugMessage(msg: $"Starting Job {_jobInProgress.Current.Name}  Key: {_jobInProgress.Current.Key} new Duration is {randomizedWorkDuration}");
 
             var pub = new FUpdateSimulationJob(job: _jobInProgress.Current, jobType: JobType.OPERATION, duration: randomizedWorkDuration, start: Agent.CurrentTime, resource: Agent.Name, bucket: String.Empty);
-            Agent.Context.System.EventStream.Publish(@event: pub);
+            Agent.Publish(pub, this);
 
             var fOperationResult = new FOperationResult(key: _jobInProgress.Current.Key
                                              , creationTime: 0

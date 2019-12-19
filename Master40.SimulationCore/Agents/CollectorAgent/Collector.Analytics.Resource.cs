@@ -10,6 +10,7 @@ using Master40.SimulationCore.Types;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using static FAgentInformations;
@@ -61,7 +62,8 @@ namespace Master40.SimulationCore.Agents.CollectorAgent
                                      typeof(FThroughPutTime),
                                      typeof(Hub.Instruction.Default.AddResourceToHub),
                                      typeof(BasicInstruction.ResourceBrakeDown),
-                                     typeof(FCreateSimulationResourceSetup)
+                                     typeof(FCreateSimulationResourceSetup),
+                                     typeof(ExpandoObject)
 
             };
         }

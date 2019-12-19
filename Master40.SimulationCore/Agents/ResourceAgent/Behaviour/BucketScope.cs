@@ -238,7 +238,7 @@ namespace Master40.SimulationCore.Agents.ResourceAgent.Behaviour
                 //TODO ExpectedDuration might be different by randomize setupDuration (see WorktimeGenerator at JobDuration)
                 var pubSetup = new FCreateSimulationResourceSetups.FCreateSimulationResourceSetup(
                     expectedDuration: setupDuration, duration: setupDuration, start: Agent.CurrentTime, resource: Agent.Name, resourceTool: _jobInProgress.Current.Tool.Name);
-                Agent.Context.System.EventStream.Publish(@event: pubSetup);
+                Agent.Publish(pubSetup, this);
             }
 
             _jobInProgress.SetStartTime(Agent.CurrentTime);
@@ -270,7 +270,7 @@ namespace Master40.SimulationCore.Agents.ResourceAgent.Behaviour
             Agent.DebugMessage(msg: $"Starting Job {operation.Operation.Name}  Key: {operation.Key} new Duration is {randomizedWorkDuration}");
 
             var pub = new FUpdateSimulationJobs.FUpdateSimulationJob(job: operation, jobType: JobType.OPERATION, duration: randomizedWorkDuration, start: Agent.CurrentTime, resource: Agent.Name, bucket: bucket.Name);
-            Agent.Context.System.EventStream.Publish(@event: pub);
+            Agent.Publish(pub, this);
 
             var fOperationResult = new FOperationResults.FOperationResult(key: operation.Key
                 , creationTime: 0

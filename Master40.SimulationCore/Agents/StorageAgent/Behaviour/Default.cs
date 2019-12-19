@@ -179,9 +179,8 @@ namespace Master40.SimulationCore.Agents.StorageAgent.Behaviour
                                                         , requestAgentId: article.DispoRequester.Path.Uid.ToString()
                                                         , requestAgentName: article.DispoRequester.Path.Name
                                                         , isHeadDemand: article.IsHeadDemand
-                                                        , customerOrderId: article.CustomerOrderId
-                                                        , this);
-                Agent.Context.System.EventStream.Publish(@event: pub);
+                                                        , customerOrderId: article.CustomerOrderId);
+                Agent.Publish(pub, this);
             }
             else
             {
@@ -281,8 +280,7 @@ namespace Master40.SimulationCore.Agents.StorageAgent.Behaviour
             var pub = new FUpdateStockValue(stockName: article.Name
                                             , newValue: value
                                             , articleType: article.ArticleType.Name);
-            Agent.Publish();
-            Agent.Context.System.EventStream.Publish(@event: pub);
+            Agent.Publish(pub, this);
         }
     }
 }

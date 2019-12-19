@@ -5,7 +5,9 @@ using Master40.SimulationCore.Helper;
 using Master40.SimulationCore.Types;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Dynamic;
 
 namespace Master40.SimulationCore.Agents
 {
@@ -143,12 +145,21 @@ namespace Master40.SimulationCore.Agents
             base.Finish();
         }
 
-        internal void Publish(object o)
+        internal void Publish(object o, IBehaviour behaviour)
         {
-            // objekt müsste hier kppiert / erweitert werden.
-            FUpdateStockValues
-                fUpdateStockValuesDebug
+            #if DEBUG
+            dynamic temp = new ExpandoObject();
+            temp.obj = o;
+            temp.sender = behaviour;
+            o = temp;
+            #endif
             this.Context.System.EventStream.Publish(@event: o);
         }
+    }
+    public class DebugAttribute : Attribute {
+    public DebugAttribute(IBehaviour behaviour) {
+        _behaviour = behaviour;
+    }
+    protected IBehaviour _behaviour;
     }
 }
