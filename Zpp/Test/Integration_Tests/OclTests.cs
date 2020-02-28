@@ -56,8 +56,8 @@ namespace Zpp.Test.Integration_Tests
             //Read conditions / OCLs from file
             string ocls = File.ReadAllText(@"C:\temp\OCL_Demo.txt");
 
-            //Attach OCLs to program
-            OclTestProvider.AddConstraints(new[] { "Zpp", "Master40.DB" }, ocls);
+            //Attach OCLs to program (Bool para 1. debugger 2. custom methode)
+            OclTestProvider.AddConstraints(new[] { "Zpp", "Master40.DB" }, ocls, false, false);
 
             //Start test
             var zppSimulator = new ZppSimulator.impl.ZppSimulator();
@@ -80,7 +80,7 @@ namespace Zpp.Test.Integration_Tests
                     or self._productionOrderOperation.StartForward >= 0 
                         and self._productionOrderOperation.EndForward >= 0
         ";
-            OclTestProvider.AddConstraints(new[] {"Zpp", "Master40.DB"}, ocls);
+            OclTestProvider.AddConstraints(new[] {"Zpp", "Master40.DB"}, ocls, false, false);
 
 
             foreach (var productionOrderOperation in dbTransactionData

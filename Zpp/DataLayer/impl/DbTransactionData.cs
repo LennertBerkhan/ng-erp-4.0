@@ -257,7 +257,6 @@ namespace Zpp.DataLayer.impl
                         //post TestBackwardScheduling: self.tProductionOrderOperations_FS->forAll(ProdOrOp | ProdOrOp.EndBackward <> null and ProdOrOp.StartBackward <> null)
                         ProdOrOp.EndBackward = null;
                         ProdOrOp.StartBackward = null;
-                        System.Diagnostics.Debugger.Break();
                         ProdOrOp.Duration = -42;
                         //post TestForwardSchedulingNull: self.tProductionOrderOperations_FS->forAll(ProdOrOp | ProdOrOp.EndForward <> null and ProdOrOp.StartForward <> null)
                         //Schlägt aus weil die Werte mit Null gefüllt sind, wenn nicht der Else-Zweig ausgeführt wird
