@@ -30,8 +30,8 @@ namespace Zpp.DataLayer.impl
         private readonly ProductionDomainContext _productionDomainContext;
 
         // TODO: These 3 lines should be removed
-        private readonly List<M_Article> _articles;
-        private readonly List<M_ArticleBom> _articleBoms;
+        public readonly List<M_Article> _articles;
+        public readonly List<M_ArticleBom> _articleBoms;
         private readonly List<M_BusinessPartner> _businessPartners;
 
         // T_*
@@ -64,6 +64,12 @@ namespace Zpp.DataLayer.impl
         private readonly LinkDemandAndProviderTable _demandToProviderTable;
 
         private readonly LinkDemandAndProviderTable _providerToDemandTable;
+
+        // Lists FS
+        public List<T_ProductionOrderBom> tProductionOrderBoms_FS;
+        public List<T_ProductionOrder> tProductionOrders_FS;
+        public List<T_PurchaseOrderPart> tPurchaseOrderParts_FS;
+        public List<T_ProductionOrderOperation> tProductionOrderOperations_FS;
 
         public DbTransactionData(ProductionDomainContext productionDomainContext)
         {
@@ -132,7 +138,7 @@ namespace Zpp.DataLayer.impl
                 .DemandToProviders);
         }
 
-        internal void PersistDbCache()
+        public void PersistDbCache()
         {
             // TODO: performance issue: Batch insert, since those T_* didn't exist before anyways, update is useless
             // TODO: SaveChanges at the end only once
@@ -186,6 +192,98 @@ namespace Zpp.DataLayer.impl
             }
 
             _productionDomainContext.SaveChanges();
+
+
+
+            /*
+             * Fehler FS
+             * Für OCL Test auf true setzen 
+             */
+            if (true)
+            {
+                tProductionOrders.ForEach(ProdOr =>
+                {
+                    if (ProdOr.Id.Equals(12873))
+                    {
+                        //post Allquantor: self.tProductionOrders_FS->forAll(ProdOr|ProdOr.Quantity <> 0)
+                        //QuantityGreaterThanZero
+                        ProdOr.Quantity = 0;
+
+                        //post AllquantorExistenzquantor: self.tProductionOrders_FS->forAll(ProdOr | ProdOr.ProductionOrderOperations->exists(HierarchyNumer = 10))
+                        ProdOr.ProductionOrderOperations.Remove(ProdOr.ProductionOrderOperations.First());
+
+                        //CheckArticleSize
+                        ProdOr.ProductionOrderBoms.Remove(ProdOr.ProductionOrderBoms.First());
+
+
+                        //CheckStartAndEndTimes
+                        foreach (var ProOrOp in ProdOr.ProductionOrderOperations)
+                        {
+                            if (ProOrOp.Id.Equals(12885))
+                            {
+                                ProOrOp.End = 1500;
+                            }
+                        }
+                        var dummy = ProdOr.ProductionOrderOperations;
+
+                        //CheckQuantityProdOrBomsToArticleBoms
+                        ProdOr.Quantity = 1;
+
+                        var xx = ProdOr.ProductionOrderOperations;
+                        ProdOr.ProductionOrderOperations = xx;
+
+                    }
+
+                    if (ProdOr.Id.Equals(12839))
+                    {
+                        //post Existenzquantor: self.tProductionOrders_FS->exists(ProdOr | ProdOr.Id = 12839)
+                        ProdOr.Id = 98765;
+
+                        //post Summe: self.tProductionOrders_FS->Sum( po | po.Quantity ) > 0
+                        //QuantityGreaterThanZero
+                        ProdOr.Quantity = -1000;
+
+                        //DueTimeGreaterThanZero
+                        ProdOr.DueTime = -42;
+
+                    }
+                });
+
+                tProductionOrderOperations.ForEach(ProdOrOp =>
+                {
+
+                    if (ProdOrOp.Id.Equals(12843))
+                    {
+                        //post TestBackwardScheduling: self.tProductionOrderOperations_FS->forAll(ProdOrOp | ProdOrOp.EndBackward <> null and ProdOrOp.StartBackward <> null)
+                        ProdOrOp.EndBackward = null;
+                        ProdOrOp.StartBackward = null;
+                        System.Diagnostics.Debugger.Break();
+                        ProdOrOp.Duration = -42;
+                        //post TestForwardSchedulingNull: self.tProductionOrderOperations_FS->forAll(ProdOrOp | ProdOrOp.EndForward <> null and ProdOrOp.StartForward <> null)
+                        //Schlägt aus weil die Werte mit Null gefüllt sind, wenn nicht der Else-Zweig ausgeführt wird
+                    }
+                });
+            }
+            else
+            {
+                //Um OCL Fehlermeldung zu verhindern
+                //post TestForwardSchedulingNull: self.tProductionOrderOperations_FS->forAll(ProdOrOp | ProdOrOp.EndForward <> null and ProdOrOp.StartForward <> null)
+                tProductionOrderOperations.ForEach(ProdOrOp =>
+                {
+                    ProdOrOp.EndForward = 42;
+                    ProdOrOp.StartForward = 42;
+                });
+            }
+
+            //Filling FS Lists
+            tProductionOrders_FS = tProductionOrders;
+            tPurchaseOrderParts_FS = tPurchaseOrderParts;
+            tProductionOrderOperations_FS = tProductionOrderOperations;
+
+            //foreach (T_ProductionOrder ProdOr in tProductionOrders_FS)
+            //{
+            //    Console.Write(ProdOr.Name);
+            //}
         }
 
         public void CustomerOrderAdd(T_CustomerOrder customerOrder)

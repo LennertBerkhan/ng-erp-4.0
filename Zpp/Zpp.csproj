@@ -35,7 +35,6 @@
       <Folder Include="Test\Configuration\Scenarios\" />
       <Folder Include="Test\Integration_Tests\" />
       <Folder Include="Test\Ordergraphs\GanttChart\" />
-      <Folder Include="Test\Unit_Tests\Provider" />
       <Folder Include="Test\Unit_Tests\Provider\" />
       <Folder Include="Test\WrappersForPrimitives\" />
       <Folder Include="Utils\Queue\" />

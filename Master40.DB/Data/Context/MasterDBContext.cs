@@ -147,12 +147,12 @@ namespace Master40.DB.Data.Context
                 .HasForeignKey(foreignKeyExpression: fk => fk.ProductionOrderParentId)
                 .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<T_ProductionOrderBom>()
+            /*modelBuilder.Entity<T_ProductionOrderBom>()
                 .ToTable(name: "T_ProductionOrderBom")
                 .HasOne(navigationExpression: p => p.ProductionOrderOperation)
                 .WithMany(navigationExpression: b => b.ProductionOrderBoms)
                 .HasForeignKey(foreignKeyExpression: fk => fk.ProductionOrderOperationId)
-                .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
+                .OnDelete(deleteBehavior: DeleteBehavior.Restrict);*/
 
             modelBuilder.Entity<T_ProductionOrderOperation>()
                 .ToTable(name: "T_ProductionOrderOperation");

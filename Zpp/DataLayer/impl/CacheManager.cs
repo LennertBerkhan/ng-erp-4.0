@@ -177,7 +177,7 @@ namespace Zpp.DataLayer.impl
         public void Persist()
         {
             _dbTransactionData.PersistDbCache();
-            _dbTransactionDataArchive.PersistDbCache();
+            //_dbTransactionDataArchive.PersistDbCache();
         }
 
         public void UseArchiveForGetters()

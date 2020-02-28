@@ -17,8 +17,25 @@ namespace Master40.DB.DataModel
 
         public int Capacity { get; set; }
         [JsonIgnore]
-        public virtual ICollection<T_ProductionOrderOperation> ProductionOrderOperations { get; set; }
+        private ICollection<T_ProductionOrderOperation> productionOrderOperations { get; set; }
+        public virtual ICollection<T_ProductionOrderOperation> ProductionOrderOperations
+        {
+            get
+            {
+                return productionOrderOperations;
+            }
+            set
+            {
+                productionOrderOperations = value;
+            }
+        }
 
+        private string _s;
+        public string YourProperty
+        {
+            get { return _s; }
+            set { _s = value; }
+        }
         public override string ToString()
         {
             return Name;

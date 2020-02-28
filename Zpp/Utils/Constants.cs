@@ -47,7 +47,7 @@ namespace Zpp.Util
         
         private static String DbConnectionZppSqlServer(string dbName)
         {
-            return $"Server=localhost,1433;Database={dbName};" +
+            return $"Data Source=localhost;Database={dbName};" +
                    $"MultipleActiveResultSets=true;User ID=SA;Password=123*Start#";
         }
 
